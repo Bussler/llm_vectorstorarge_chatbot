@@ -4,10 +4,12 @@ The vector storage chromadb queries the relevant data at runtime and gives the a
 Store your documents in `backend/text_data` and query them through the Vuejs frontend.
 
 ## Backend
-The backend opens a fastapi service at `http://localhost:8000`, which can be queried by the frontend.  
+The backend opens a fastapi service at `http://localhost:8000`, which can be queried by the frontend.
+For simplicity, the relatively small `bigscience/bloom-560m"` model is used, this can be changed by setting the `model_id` parameter in `backend/main.py`.
 
 ### Installation
-Install the requirements (torch, huggingface transformers, langchain, chroma_db, sentence_transformers, fastapi) from the conda environment file: `conda env create --file environment.yaml`.
+Install the requirements (torch, huggingface transformers, langchain, chroma_db, sentence_transformers, fastapi) from the conda environment file: `conda env create --file environment.yaml`.  
+Furthermore create a huggingface hub account and provide your access token in `hugging_face_token` in `backend/main.py`.
 
 ### Run Backend
 In `backend/` start the backend with `python main.py`.  
