@@ -26,8 +26,11 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
 ]
-chat_history = []
+chat_history = [[]]
 
+class promt_request(BaseModel):
+    q: str
+    use_chat: int = 0
 
 def setup_llm():
     model_id="bigscience/bloom-560m"
@@ -121,8 +124,12 @@ app.add_middleware(
 
 
 @app.get("/query/")
-def read_root(q: str):
-    result = app.qna({"question": q, "chat_history": chat_history})
+def read_root(req: promt_request):
+    result = app.qna({"question": req.q, "chat_history": chat_history[req.use_chat]})
+    
+    # M: store conversation in chat history:
+    chat_history[req.use_chat].append((req.q, result["answer"]))
+    
     return {result['answer']}
 
 @app.get("/")

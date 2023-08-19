@@ -7,6 +7,7 @@ export default{
     return{
         queryValue : "",
         data: [],
+        current_chat : 0,
         activeClass: "pi pi-search",
         searchingClass: "pi pi-spin pi-spinner",
         isSearching: false,
@@ -21,11 +22,16 @@ export default{
         const q = {query: this.queryValue,
                     response: ""};
 
-        const path = 'http://127.0.0.1:8000/query/?q='+this.queryValue;
+        const path = 'http://127.0.0.1:8000/query/'//?q='+this.queryValue;
+        const query_data = {
+          q: this.queryValue,
+          use_chat: this.current_chat
+        }
+
         this.isSearching = true;
         this.queryValue = "";
 
-        this.axios.get(path).then((response) => {
+        this.axios.get(path, query_data).then((response) => {
         console.log(response.data[0]);
         q['response'] = response.data[0]
         this.data.push(q);
