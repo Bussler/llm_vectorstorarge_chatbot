@@ -84,7 +84,7 @@ def setup_llm():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    hugging_face_token = ''
+    hugging_face_token = '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'
     huggingface_hub.login(token=hugging_face_token)
     
     print("Set up llm")
@@ -136,6 +136,17 @@ def read_root(req: promt_request):
     chat_history[req.use_chat].append((req.q, result["answer"]))
     
     return {result['answer']}
+
+
+@app.get("/history/{h_id}/reset/")
+def read_root(h_id: int):    
+    if len(chat_history) < h_id or h_id < 0:
+        return {'success': 400, 'message': 'illegal h_id'}
+    
+    chat_history[h_id] = []
+    
+    return {'success': 200}
+
 
 @app.get("/")
 def read_root():

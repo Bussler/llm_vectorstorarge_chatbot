@@ -37,7 +37,18 @@ export default{
         this.data = [q, ...this.data];
         this.isSearching = false;
         })
-    }
+    },
+
+    resetHistory: function(){
+      const path = 'http://127.0.0.1:8000/history/' + this.current_chat + '/reset/';
+      this.axios.get(path).then((response) => {
+          if(response.data.success == 200){
+            this.data = [];
+          }
+        })
+
+    },
+
 
   },
 
@@ -55,15 +66,27 @@ export default{
             <InputText type="text" style="width: 500px;" placeholder="edit me" v-model="queryValue" v-on:keyup.enter="onEnter"/>
         </span>
 
-      <Card>
-        <template #title> Response </template>
-        <template #content>
-          <li v-for="(item, index) in data">
-            <span>🤖</span>
-            {{ item.query }} - {{ item.response }}
-          </li>
-        </template>
-      </Card>
+        <div>
+          <br>
+          <Button label="Submit" icon="pi pi-check" @click="onEnter" />
+          <Button label="Reset History" icon="pi pi-undo" @click="resetHistory"/>
+        </div>
+
+        <div>
+          <Card>
+            <template #title> Response </template>
+            <template #content>
+              <ProgressSpinner v-if="isSearching" style="width: 30px; height: 30px" strokeWidth="3"
+              animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+
+              <li v-for="(item, index) in data">
+                <span>🤖</span>
+                {{ item.query }} - {{ item.response }}
+              </li>
+            </template>
+          </Card>
+        </div>
+
     </div>
   </main>
 
