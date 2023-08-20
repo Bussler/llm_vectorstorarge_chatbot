@@ -18,7 +18,7 @@ export default{
 
     onEnter: function() {
 
-        console.log("Query: ", this.queryValue);
+        //console.log("Query: ", this.queryValue);
         const q = {query: this.queryValue,
                     response: ""};
 
@@ -31,10 +31,10 @@ export default{
         this.isSearching = true;
         this.queryValue = "";
 
-        this.axios.get(path, query_data).then((response) => {
-        console.log(response.data[0]);
-        q['response'] = response.data[0]
-        this.data.push(q);
+        this.axios.post(path, query_data).then((response) => {
+        //console.log(response.data[0]);
+        q['response'] = response.data[0];
+        this.data = [q, ...this.data];
         this.isSearching = false;
         })
     }
@@ -52,13 +52,14 @@ export default{
     <div>
         <span class="p-input-icon-right">
             <i :class="[!isSearching ? activeClass : searchingClass]" />
-            <InputText type="text" placeholder="edit me" v-model="queryValue" v-on:keyup.enter="onEnter"/>
+            <InputText type="text" style="width: 500px;" placeholder="edit me" v-model="queryValue" v-on:keyup.enter="onEnter"/>
         </span>
 
       <Card>
         <template #title> Response </template>
         <template #content>
           <li v-for="(item, index) in data">
+            <span>🤖</span>
             {{ item.query }} - {{ item.response }}
           </li>
         </template>

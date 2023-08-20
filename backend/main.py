@@ -123,7 +123,7 @@ app.add_middleware(
 )
 
 
-@app.get("/query/")
+@app.post("/query/")
 def read_root(req: promt_request):
     result = app.qna({"question": req.q, "chat_history": chat_history[req.use_chat]})
     
