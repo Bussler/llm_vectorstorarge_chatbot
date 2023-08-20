@@ -111,7 +111,12 @@ async def lifespan(app: FastAPI):
     )
     
     yield
+    
     # Clean up the ML models and release the resources
+    del app.llm
+    del app.doc_search
+    del app.qna
+    
     
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
