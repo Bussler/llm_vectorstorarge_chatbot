@@ -17,6 +17,8 @@ import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Divider from 'primevue/divider';
 import ProgressSpinner from 'primevue/progressspinner';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 
 
 const app = createApp(App)
@@ -30,5 +32,7 @@ app.component('Card', Card);
 app.component('InputText', InputText);
 app.component('Divider', Divider);
 app.component('ProgressSpinner', ProgressSpinner);
+app.component('TabView', TabView);
+app.component('TabPanel', TabPanel);
 
 app.mount('#app')

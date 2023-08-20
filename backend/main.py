@@ -84,7 +84,7 @@ def setup_llm():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    hugging_face_token = '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'
+    hugging_face_token = ''
     huggingface_hub.login(token=hugging_face_token)
     
     print("Set up llm")
@@ -130,6 +130,10 @@ app.add_middleware(
 
 @app.post("/query/")
 def read_root(req: promt_request):
+    
+    if len(chat_history) == req.use_chat:
+        chat_history.append([])
+    
     result = app.qna({"question": req.q, "chat_history": chat_history[req.use_chat]})
     
     # M: store conversation in chat history:

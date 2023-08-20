@@ -6,7 +6,7 @@ export default{
   data(){
     return{
         queryValue : "",
-        data: [],
+        data: [[]],
         current_chat : 0,
         activeClass: "pi pi-search",
         searchingClass: "pi pi-spin pi-spinner",
@@ -34,7 +34,7 @@ export default{
         this.axios.post(path, query_data).then((response) => {
         //console.log(response.data[0]);
         q['response'] = response.data[0];
-        this.data = [q, ...this.data];
+        this.data[this.current_chat] = [q, ...this.data[this.current_chat]];
         this.isSearching = false;
         })
     },
@@ -43,12 +43,17 @@ export default{
       const path = 'http://127.0.0.1:8000/history/' + this.current_chat + '/reset/';
       this.axios.get(path).then((response) => {
           if(response.data.success == 200){
-            this.data = [];
+            this.data[this.current_chat] = [];
           }
         })
 
     },
 
+    addHistory: function(){
+      this.data = [...this.data, []];
+      // TODO: this is buggy right now! We can set the active tab, but not get the active tab!
+      this.current_chat += 1;
+    },
 
   },
 
@@ -69,6 +74,7 @@ export default{
         <div>
           <br>
           <Button label="Submit" icon="pi pi-check" @click="onEnter" />
+          <Button label="Add History" icon="pi pi-plus" @click="addHistory" />
           <Button label="Reset History" icon="pi pi-undo" @click="resetHistory"/>
         </div>
 
@@ -79,15 +85,21 @@ export default{
               <ProgressSpinner v-if="isSearching" style="width: 30px; height: 30px" strokeWidth="3"
               animationDuration=".5s" aria-label="Custom ProgressSpinner" />
 
-              <li v-for="(item, index) in data">
-                <span>🤖</span>
-                {{ item.query }} - {{ item.response }}
-              </li>
+              <TabView v-bind:activeIndex="current_chat">
+                <TabPanel v-for="(tab, index) in data" :key="index" @click="current_chat = index" :header="'History '+index">
+                  <li v-for="(item, index_item) in tab">
+                      <span>🤖</span>
+                      {{ item.query }} - {{ item.response }}
+                 </li>
+                </TabPanel>
+              </TabView>
+
             </template>
           </Card>
         </div>
 
     </div>
+    
   </main>
 
 </template>
