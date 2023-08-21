@@ -17,8 +17,6 @@ export default{
   methods: {
 
     onEnter: function() {
-
-        //console.log("Query: ", this.queryValue);
         const q = {query: this.queryValue,
                     response: ""};
 
@@ -32,7 +30,6 @@ export default{
         this.queryValue = "";
 
         this.axios.post(path, query_data).then((response) => {
-        //console.log(response.data[0]);
         q['response'] = response.data[0];
         this.data[this.current_chat] = [q, ...this.data[this.current_chat]];
         this.isSearching = false;
@@ -51,9 +48,9 @@ export default{
 
     addHistory: function(){
       this.data = [...this.data, []];
-      // TODO: this is buggy right now! We can set the active tab, but not get the active tab!
-      this.current_chat += 1;
+      this.current_chat = this.data.length-1;
     },
+
 
   },
 
@@ -85,8 +82,8 @@ export default{
               <ProgressSpinner v-if="isSearching" style="width: 30px; height: 30px" strokeWidth="3"
               animationDuration=".5s" aria-label="Custom ProgressSpinner" />
 
-              <TabView v-bind:activeIndex="current_chat">
-                <TabPanel v-for="(tab, index) in data" :key="index" @click="current_chat = index" :header="'History '+index">
+              <TabView v-model:activeIndex="current_chat">
+                <TabPanel v-for="(tab, index) in data" :key="index" :header="'History '+index">
                   <li v-for="(item, index_item) in tab">
                       <span>🤖</span>
                       {{ item.query }} - {{ item.response }}
