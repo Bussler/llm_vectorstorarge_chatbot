@@ -142,8 +142,14 @@ def read_root(req: promt_request):
     return {result['answer']}
 
 
+@app.get("/history/")
+def get_history():    
+    
+    return chat_history
+
+
 @app.get("/history/{h_id}/reset/")
-def read_root(h_id: int):    
+def reset_history(h_id: int):    
     if len(chat_history) < h_id or h_id < 0:
         return {'success': 400, 'message': 'illegal h_id'}
     

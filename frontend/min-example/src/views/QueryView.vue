@@ -54,6 +54,23 @@ export default{
 
   },
 
+  mounted() {
+    const path = 'http://127.0.0.1:8000/history/';
+    this.axios.get(path).then((response) => {
+        var histories = [];
+        for (let i = 0; i < response.data.length; i++) {
+          var history = [];
+          for (let j = 0; j < response.data[i].length; j++) {
+            const q = {query: response.data[i][j][0],
+                    response: response.data[i][j][1]};
+            history = [q, ...history];
+          }
+          histories = [...histories, history];
+        }
+        this.data = histories;
+      })
+  },
+
 }
 
 </script>
@@ -85,8 +102,9 @@ export default{
               <TabView v-model:activeIndex="current_chat">
                 <TabPanel v-for="(tab, index) in data" :key="index" :header="'History '+index">
                   <li v-for="(item, index_item) in tab">
-                      <span>🤖</span>
-                      {{ item.query }} - {{ item.response }}
+                      <span>🤖 </span>
+                      <span>{{ item.query }} - </span>
+                      <span>{{ item.response }}</span>
                  </li>
                 </TabPanel>
               </TabView>
