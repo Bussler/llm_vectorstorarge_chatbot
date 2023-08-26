@@ -17,6 +17,7 @@ def upsert(db: Chroma, embedder, documents):
     embed_docs = embedder.encode(docs)
     
     db._collection.upsert(ids=ids, embeddings=embed_docs, documents=docs)
+    db.persist()
 
 
 def parse_documents(dir = "text_data/"):
