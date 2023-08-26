@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
     
     app.llm = setup_llm()
     
-    app.doc_search = setup_chroma_db()
+    app.doc_search, app.embedder = setup_chroma_db()
     
     app.qna = ConversationalRetrievalChain.from_llm(
         app.llm, 
@@ -49,6 +49,7 @@ async def lifespan(app: FastAPI):
     # Clean up the ML models and release the resources
     del app.llm
     del app.doc_search
+    del app.embedder
     del app.qna
     
     
