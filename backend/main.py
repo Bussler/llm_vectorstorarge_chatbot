@@ -5,18 +5,14 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-
-from langchain.document_loaders import DirectoryLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.chains import ConversationalRetrievalChain
-
-import huggingface_hub
-
 import uvicorn
 
+from langchain.vectorstores import Chroma
+from langchain.chains import ConversationalRetrievalChain
+import huggingface_hub
+
 from setup_model import setup_llm
+from setup_vector_storage import setup_chroma_db
 
 
 app = FastAPI()
@@ -38,22 +34,9 @@ async def lifespan(app: FastAPI):
     hugging_face_token = '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'
     huggingface_hub.login(token=hugging_face_token)
     
-    print("Set up llm")
     app.llm = setup_llm()
     
-    print("parse in text documents")
-    loader = DirectoryLoader("text_data/", glob="**/*.txt" )
-    documents = loader.load()
-    
-    print("doing text splitting")
-    text_splitter = CharacterTextSplitter(chunk_size = 100, chunk_overlap=0)
-    docs = text_splitter.split_documents(documents=documents)
-    
-    print("embeddings")
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    
-    print("vector store")
-    app.doc_search = Chroma.from_documents(docs, embeddings, persist_directory='chroma_db')
+    app.doc_search = setup_chroma_db()
     
     app.qna = ConversationalRetrievalChain.from_llm(
         app.llm, 

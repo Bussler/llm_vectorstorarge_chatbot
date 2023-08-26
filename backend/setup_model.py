@@ -7,6 +7,8 @@ def setup_llm(model_id="bigscience/bloom-560m"):
     model_id="bigscience/bloom-560m"
     device = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
 
+    print("Set up llm...")
+    
     model_config = transformers.AutoConfig.from_pretrained(
         model_id,
     )
