@@ -11,6 +11,7 @@ export default{
         activeClass: "pi pi-search",
         searchingClass: "pi pi-spin pi-spinner",
         isSearching: false,
+        isUploading: false,
     }
   },
 
@@ -51,6 +52,14 @@ export default{
       this.current_chat = this.data.length-1;
     },
 
+    onStartUpload: function(){
+      this.isUploading = true;
+    },
+
+    onUpload: function(){
+      this.isUploading = false;
+      this.$toast.add({ severity: 'success', summary: 'Success', detail: 'File Upload Completed', life: 3000 });
+    },
 
   },
 
@@ -77,6 +86,14 @@ export default{
 
 <template>
   <main>
+
+    <div>
+      <FileUpload mode="basic" name="files" url="http://127.0.0.1:8000/vectordb/add/" accept=".txt" :multiple="true"
+      @upload="onUpload" @before-upload="onStartUpload" :auto="true" chooseLabel="Add File" />
+
+      <ProgressBar v-if="isUploading" mode="indeterminate" style="height: 6px"></ProgressBar>
+    </div>
+
     <h1>Ask a question:</h1>
 
     <div>
@@ -114,7 +131,32 @@ export default{
         </div>
 
     </div>
+
+    <Toast />
     
   </main>
 
 </template>
+
+<style>
+
+@keyframes p-progress-spinner-color {
+    100%,
+    0% {
+        stroke: #008744;
+    }
+    20% {
+        stroke: #09edde; 
+    }
+    40% {
+        stroke: #d62d20;
+    }
+    60% {
+        stroke: #ffa700;
+    }
+    90% {
+        stroke: #0057e7;
+    }
+}
+
+</style>
