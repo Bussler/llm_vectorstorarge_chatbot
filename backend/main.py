@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
     hugging_face_token = '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'
     huggingface_hub.login(token=hugging_face_token)
     
-    app.llm = setup_llm()
+    app.llm = setup_llm(model_id="bigscience/bloom-560m")
     
     app.doc_search, app.embedder = setup_chroma_db()
     
