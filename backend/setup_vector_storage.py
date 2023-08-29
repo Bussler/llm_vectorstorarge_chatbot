@@ -1,4 +1,5 @@
 from langchain.vectorstores import Chroma
+from langchain.docstore.document import Document
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -11,13 +12,26 @@ def get_storage_count(db: Chroma):
     return db._collection.count()
 
 
+# M: insert document if not previously in db, otherwise update
 def upsert(db: Chroma, embedder, documents):
     docs, ids = split_documents(documents)
     
-    embed_docs = embedder.encode(docs)
+    embed_docs = embedder.embed_documents([doc.page_content for doc in docs])
     
-    db._collection.upsert(ids=ids, embeddings=embed_docs, documents=docs)
+    db._collection.upsert(ids=ids, embeddings=embed_docs,
+                          metadatas=[doc.metadata for doc in docs],
+                          documents=[doc.page_content for doc in docs])
     db.persist()
+
+
+def add_document(api, files):
+    documents = []
+    for file in files:
+        content = file.file.read()
+        filename = file.filename
+        documents.append(Document(page_content=content, metadata={'source': filename}))
+    
+    upsert(api.doc_search, api.embedder, documents)
 
 
 def parse_documents(dir = "text_data/"):
@@ -27,7 +41,7 @@ def parse_documents(dir = "text_data/"):
     return documents
 
 
-def split_documents(documents):
+def split_documents(documents: Document):
     print("Doing text splitting...")
     text_splitter = CharacterTextSplitter(chunk_size = 100, chunk_overlap=0)
     docs = text_splitter.split_documents(documents=documents)

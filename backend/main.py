@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Union, List
 
-from fastapi import FastAPI, BackgroundTasks, Request, Form
+from fastapi import FastAPI, BackgroundTasks, Request, File, UploadFile
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,7 +12,7 @@ from langchain.chains import ConversationalRetrievalChain
 import huggingface_hub
 
 from setup_model import setup_llm
-from setup_vector_storage import setup_chroma_db
+from setup_vector_storage import setup_chroma_db, add_document
 
 
 app = FastAPI()
@@ -90,6 +90,19 @@ def reset_history(h_id: int):
     
     chat_history[h_id] = []
     
+    return {'success': 200}
+
+
+@app.post("/vectordb/add/")
+def add_file_vectordb(files: List[UploadFile] = File(...)):    
+    
+    try:
+        add_document(app, files)
+    except Exception as e:
+        return{'success': 400, 'message': f"There was an error uploading a file! {str(e)}"}
+    finally:
+        for file in files:
+            file.file.close()
     return {'success': 200}
 
 
