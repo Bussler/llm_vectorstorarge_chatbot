@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import Greetings from './components/Greetings.vue'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import HelloWorld from './components/HelloWorld.vue'
     <img alt="Bug Gang logo" class="logo" src="@/assets/marioBugGang.png" width="170" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="Welcome!" />
+      <Greetings msg="Welcome!" />
 
       <nav>
         <RouterLink to="/">Query</RouterLink>

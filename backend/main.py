@@ -31,7 +31,7 @@ class promt_request(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    hugging_face_token = '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'
+    hugging_face_token = ''
     huggingface_hub.login(token=hugging_face_token)
     
     app.llm = setup_llm(model_id="bigscience/bloom-560m")
