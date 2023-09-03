@@ -23,36 +23,39 @@ origins = [
 ]
 chat_history = [[]]
 
+
 class promt_request(BaseModel):
     q: str
     use_chat: int = 0
-    
+
+
+class model_name(BaseModel):
+    model_id: str
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    hugging_face_token = ''
+    hugging_face_token = ""
     huggingface_hub.login(token=hugging_face_token)
-    
+
     app.llm = setup_llm(model_id="bigscience/bloom-560m")
-    
+
     app.doc_search, app.embedder = setup_chroma_db()
-    
+
     app.qna = ConversationalRetrievalChain.from_llm(
-        app.llm, 
-        app.doc_search.as_retriever(), 
-        return_source_documents=True
+        app.llm, app.doc_search.as_retriever(), return_source_documents=True
     )
-    
+
     yield
-    
+
     # Clean up the ML models and release the resources
     del app.llm
     del app.doc_search
     del app.embedder
     del app.qna
-    
-    
+
+
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
@@ -65,51 +68,68 @@ app.add_middleware(
 
 @app.post("/query/")
 def read_root(req: promt_request):
-    
     if len(chat_history) == req.use_chat:
         chat_history.append([])
-    
+
     result = app.qna({"question": req.q, "chat_history": chat_history[req.use_chat]})
-    
+
     # M: store conversation in chat history:
     chat_history[req.use_chat].append((req.q, result["answer"]))
-    
-    return {result['answer']}
+
+    return {result["answer"]}
+
+
+@app.post("/query/llm/")
+def load_model(model_name: model_name):
+    print("test")
+    try:
+        app.llm = setup_llm(model_id=model_name.model_id)
+        app.qna = ConversationalRetrievalChain.from_llm(
+            app.llm, app.doc_search.as_retriever(), return_source_documents=True
+        )
+
+    except Exception as e:
+        return {
+            "success": 400,
+            "message": f"There was an error loading a new model! {str(e)}",
+        }
+
+    return {"success": 200}
 
 
 @app.get("/history/")
-def get_history():    
-    
+def get_history():
     return chat_history
 
 
 @app.get("/history/{h_id}/reset/")
-def reset_history(h_id: int):    
+def reset_history(h_id: int):
     if len(chat_history) < h_id or h_id < 0:
-        return {'success': 400, 'message': 'illegal h_id'}
-    
+        return {"success": 400, "message": "illegal h_id"}
+
     chat_history[h_id] = []
-    
-    return {'success': 200}
+
+    return {"success": 200}
 
 
 @app.post("/vectordb/add/")
-def add_file_vectordb(files: List[UploadFile] = File(...)):    
-    
+def add_file_vectordb(files: List[UploadFile] = File(...)):
     try:
         add_document(app, files)
     except Exception as e:
-        return{'success': 400, 'message': f"There was an error uploading a file! {str(e)}"}
+        return {
+            "success": 400,
+            "message": f"There was an error uploading a file! {str(e)}",
+        }
     finally:
         for file in files:
             file.file.close()
-    return {'success': 200}
+    return {"success": 200}
 
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
 
 
 if __name__ == "__main__":
