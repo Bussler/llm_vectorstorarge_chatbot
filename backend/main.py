@@ -97,6 +97,11 @@ def load_model(model_name: model_name):
     return {"success": 200}
 
 
+@app.get("/query/llm/")
+def get_model():
+    return {"success": 200, "model_id": app.llm.pipeline.model.name_or_path}
+
+
 @app.get("/history/")
 def get_history():
     return chat_history

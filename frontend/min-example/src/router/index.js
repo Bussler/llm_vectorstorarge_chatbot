@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AboutView from '../views/AboutView.vue'
 import QueryView from '../views/QueryView.vue'
+import LLMView from '../views/LLMView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/',
       name: 'query',
       component: QueryView
+    },
+    {
+      path: '/llm/',
+      name: 'llm',
+      component: LLMView
     },
   ]
 })
