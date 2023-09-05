@@ -13,6 +13,7 @@ The backend opens a fastapi service at `http://localhost:8000`, which can be que
 ### Installation
 Python is required for running the backend. A popular form of installation is through [anaconda](https://www.anaconda.com/), which also enables you to install the required libraries through the conda environment file.
 Install the requirements (torch, huggingface transformers, langchain, chroma_db, sentence_transformers, fastapi) from the conda environment file: `conda env create --file environment.yml`.  
+Alternatively you can use [poetry](https://python-poetry.org/docs/) with the `pyproject.toml` file: `poetry install` to install the dependencies, then `poetry shell` to start the virtual environment.  
 Furthermore create a [huggingface hub](https://huggingface.co) account and provide your access token in `hugging_face_token` in `backend/main.py`.
 
 ### Run Backend
