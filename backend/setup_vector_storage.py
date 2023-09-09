@@ -11,6 +11,13 @@ import uuid
 def get_storage_count(db: Chroma):
     return db._collection.count()
 
+def get_storage_documents(db: Chroma):
+    docs = set()
+    metadata = db.get()['metadatas']
+    for doc in metadata:
+        docs.add(doc['source'])
+    docs = sorted(docs)
+    return docs
 
 # M: insert document if not previously in db, otherwise update
 def upsert(db: Chroma, embedder, documents):

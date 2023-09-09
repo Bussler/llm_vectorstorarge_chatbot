@@ -13,6 +13,7 @@ import Greetings from './components/Greetings.vue'
       <nav>
         <RouterLink to="/">Query</RouterLink>
         <RouterLink to="/llm/">Change LLM</RouterLink>
+        <RouterLink to="/vector_db/">Vector DB</RouterLink>
         <RouterLink to="/about/">About</RouterLink>
       </nav>
     </div>

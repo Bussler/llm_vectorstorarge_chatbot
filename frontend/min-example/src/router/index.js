@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AboutView from '../views/AboutView.vue'
 import QueryView from '../views/QueryView.vue'
 import LLMView from '../views/LLMView.vue'
+import VectorDbView from '../views/VectorDbView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,11 @@ const router = createRouter({
       path: '/llm/',
       name: 'llm',
       component: LLMView
+    },
+    {
+      path: '/vector_db/',
+      name: 'vector_db',
+      component: VectorDbView
     },
   ]
 })

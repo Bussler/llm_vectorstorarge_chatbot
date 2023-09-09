@@ -12,7 +12,7 @@ from langchain.chains import ConversationalRetrievalChain
 import huggingface_hub
 
 from setup_model import setup_llm
-from setup_vector_storage import setup_chroma_db, add_document
+from setup_vector_storage import setup_chroma_db, add_document, get_storage_count, get_storage_documents
 
 
 app = FastAPI()
@@ -36,7 +36,7 @@ class model_name(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    hugging_face_token = ""
+    hugging_face_token = "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"
     huggingface_hub.login(token=hugging_face_token)
 
     app.llm = setup_llm(model_id="bigscience/bloom-560m")
@@ -130,6 +130,16 @@ def add_file_vectordb(files: List[UploadFile] = File(...)):
         for file in files:
             file.file.close()
     return {"success": 200}
+
+@app.get("/vectordb/documents/")
+def get_files_vectordb():
+    docs = get_storage_documents(app.doc_search)
+    return {"success": 200, "docs": docs}
+
+@app.get("/vectordb/documents_count/")
+def get_file_count_vectordb():
+    docs_count = get_storage_count(app.doc_search)
+    return {"success": 200, "docs_count": docs_count}
 
 
 @app.get("/")
