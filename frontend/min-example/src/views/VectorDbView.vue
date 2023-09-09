@@ -19,6 +19,7 @@ export default {
         onUpload: function () {
             this.isUploading = false;
             this.$toast.add({ severity: 'success', summary: 'Success', detail: 'File Upload Completed', life: 3000 });
+            this.getVectorDBDocuments();
         },
 
         getVectorDBDocuments: function () {
