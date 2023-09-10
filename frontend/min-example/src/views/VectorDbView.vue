@@ -32,8 +32,17 @@ export default {
             })
         },
 
-        deleteDoc: function () {
-            return null;
+        deleteDoc: function (filename) {
+            const path = 'http://127.0.0.1:8000/vectordb/delete/';
+            const query_data = {
+                documents: [filename],
+            }
+
+            this.axios.post(path, query_data).then((response) => {
+                if (response.data.success == 200) {
+                    this.getVectorDBDocuments();
+                }
+            })
         },
 
     },
@@ -62,9 +71,13 @@ export default {
 
             <ul class="list">
                 <li v-for="item in vector_documents">
-                    <span><i class="pi pi-file"></i></span>
-                    <span>{{ item }}</span>
-                    <!-- <Button label="Submit" icon="pi pi-check" @click="deleteDoc" /> -->
+                    <table>
+                        <tr>
+                            <th><span><i class="pi pi-file"></i></span></th>
+                            <th><span>{{ item }}</span></th>
+                            <th><Button label="Delete" icon="pi pi-minus-circle" @click="deleteDoc(item)" /></th>
+                        </tr>
+                    </table>
                     <hr class="!border-t-2">
                 </li>
             </ul>
