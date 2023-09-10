@@ -27,5 +27,7 @@ COPY . .
 EXPOSE 8000
 
 # Run the application.
-#CMD uvicorn 'main:app' --host=127.0.0.1 --port=8000
-CMD [ "poetry", "run", "python3", "main.py" ]
+ARG HUGGINGFACE_ACCESS_TOKEN
+ENV HUGGINGFACE_TOKEN=$HUGGINGFACE_ACCESS_TOKEN
+CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "127.0.0.1", "--port", "8000"]
+#CMD [ "poetry", "run", "python3", "main.py" ]
