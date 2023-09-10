@@ -39,6 +39,15 @@ def add_document(api, files):
         documents.append(Document(page_content=content, metadata={'source': filename}))
     
     upsert(api.doc_search, api.embedder, documents)
+    
+def delete_document(db: Chroma, filenames):
+    doc_chunks = db.get()
+    
+    for id, metadata in zip(doc_chunks['ids'], doc_chunks['metadatas']):
+        if metadata['source'] in filenames:
+            db._collection.delete(id)
+    
+    db.persist()
 
 
 def parse_documents(dir = "text_data/"):

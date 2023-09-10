@@ -13,7 +13,7 @@ from langchain.chains import ConversationalRetrievalChain
 import huggingface_hub
 
 from setup_model import setup_llm
-from setup_vector_storage import setup_chroma_db, add_document, get_storage_count, get_storage_documents
+from setup_vector_storage import setup_chroma_db, add_document, get_storage_count, get_storage_documents, delete_document
 
 
 app = FastAPI()
@@ -29,9 +29,11 @@ class promt_request(BaseModel):
     q: str
     use_chat: int = 0
 
-
 class model_name(BaseModel):
     model_id: str
+    
+class document_sources(BaseModel):
+    documents: List[str]
 
 
 @asynccontextmanager
@@ -130,6 +132,11 @@ def add_file_vectordb(files: List[UploadFile] = File(...)):
     finally:
         for file in files:
             file.file.close()
+    return {"success": 200}
+
+@app.post("/vectordb/delete/")
+def delete_file_vectordb(files: document_sources):
+    delete_document(app.doc_search, files.documents)
     return {"success": 200}
 
 @app.get("/vectordb/documents/")
