@@ -13,7 +13,13 @@ from langchain.chains import ConversationalRetrievalChain
 import huggingface_hub
 
 from setup_model import setup_llm
-from setup_vector_storage import setup_chroma_db, add_document, get_storage_count, get_storage_documents, delete_document
+from setup_vector_storage import (
+    setup_chroma_db,
+    add_document,
+    get_storage_count,
+    get_storage_documents,
+    delete_document,
+)
 
 
 app = FastAPI()
@@ -29,9 +35,11 @@ class promt_request(BaseModel):
     q: str
     use_chat: int = 0
 
+
 class model_name(BaseModel):
     model_id: str
-    
+
+
 class document_sources(BaseModel):
     documents: List[str]
 
@@ -39,7 +47,7 @@ class document_sources(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    hugging_face_token = os.environ.get('HUGGINGFACE_TOKEN')
+    hugging_face_token = os.environ.get("HUGGINGFACE_TOKEN")
     huggingface_hub.login(token=hugging_face_token)
 
     app.llm = setup_llm(model_id="bigscience/bloom-560m")
@@ -134,15 +142,18 @@ def add_file_vectordb(files: List[UploadFile] = File(...)):
             file.file.close()
     return {"success": 200}
 
+
 @app.post("/vectordb/delete/")
 def delete_file_vectordb(files: document_sources):
     delete_document(app.doc_search, files.documents)
     return {"success": 200}
 
+
 @app.get("/vectordb/documents/")
 def get_files_vectordb():
     docs = get_storage_documents(app.doc_search)
     return {"success": 200, "docs": docs}
+
 
 @app.get("/vectordb/documents_count/")
 def get_file_count_vectordb():
