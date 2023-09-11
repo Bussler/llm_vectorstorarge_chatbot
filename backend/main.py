@@ -43,6 +43,12 @@ class model_name(BaseModel):
 class document_sources(BaseModel):
     documents: List[str]
 
+def setup_llm_model(model_id="bigscience/bloom-560m"):
+    app.llm = setup_llm(model_id)
+    app.qna = ConversationalRetrievalChain.from_llm(
+        app.llm, app.doc_search.as_retriever(), return_source_documents=True
+    )
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -50,13 +56,10 @@ async def lifespan(app: FastAPI):
     hugging_face_token = os.environ.get("HUGGINGFACE_TOKEN")
     huggingface_hub.login(token=hugging_face_token)
 
-    app.llm = setup_llm(model_id="bigscience/bloom-560m")
-
     app.doc_search, app.embedder = setup_chroma_db()
 
-    app.qna = ConversationalRetrievalChain.from_llm(
-        app.llm, app.doc_search.as_retriever(), return_source_documents=True
-    )
+    # M: TODO test kwargs: load more docs with k    
+    setup_llm_model(model_id="bigscience/bloom-560m")
 
     yield
 
@@ -92,12 +95,8 @@ def read_root(req: promt_request):
 
 @app.post("/query/llm/")
 def load_model(model_name: model_name):
-    print("test")
     try:
-        app.llm = setup_llm(model_id=model_name.model_id)
-        app.qna = ConversationalRetrievalChain.from_llm(
-            app.llm, app.doc_search.as_retriever(), return_source_documents=True
-        )
+        setup_llm_model(model_id=model_name.model_id)
 
     except Exception as e:
         return {

@@ -64,6 +64,8 @@ def parse_documents(dir="text_data/"):
 
 def split_documents(documents: Document):
     print("Doing text splitting...")
+    
+    #M: TODO test different splitting methods
     text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
     docs = text_splitter.split_documents(documents=documents)
 
