@@ -28,7 +28,7 @@ def setup_llm(model_id="bigscience/bloom-560m"):
     model.eval()
     print(f"Model loaded on {device}")
 
-    stop_list = ["\nHuman:", "\n```\n"]
+    stop_list = ["\n", "\n```\n"]
     stop_token_ids = [tokenizer(x)["input_ids"] for x in stop_list]
     stop_token_ids = [torch.LongTensor(x).to(device) for x in stop_token_ids]
 
