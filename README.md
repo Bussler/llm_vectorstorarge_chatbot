@@ -8,7 +8,7 @@ After the documents are embedded into the vector database, they can be queried b
 For simplicity, the relatively small `bigscience/bloom-560m` model is used at startup. The llm model can be changed through the frontend under the `Change LLM` menu.
 
 # Docker Installation
-For the following steps docker and preferably docker compose are required.  
+For the following steps [docker](https://docs.docker.com/) and preferably docker compose are required.  
 The docker images are available on docker hub under `bussler/vector_chatbot_backend` and `bussler/vector_chatbot_frontend`.  
 Since the backend wants to access llm models from [huggingface hub](https://huggingface.co), you have to provide your personal access token as an environment variable: `set HUGGINGFACE_TOKEN = <your token>`, or specify them when building the container/ in the docker/ docker compose file.  
 For easy setup with docker compose download the docker compose file (e.g. by cloning this repository: `git clone https://github.com/Bussler/llm_vectorstorarge_chatbot.git`) and call `docker compose up` .  
