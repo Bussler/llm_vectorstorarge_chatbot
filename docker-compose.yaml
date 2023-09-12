@@ -1,0 +1,12 @@
+services:
+  backend:
+    image: bussler/vector_chatbot_backend
+    ports:
+      - 127.0.0.1:8000:8000
+    environment:
+      HUGGINGFACE_TOKEN: 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
+  
+  frontend:
+    image: bussler/vector_chatbot_frontend
+    ports: 
+      - 127.0.0.1:8080:8080
