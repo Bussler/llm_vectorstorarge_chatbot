@@ -4,7 +4,7 @@ services:
     ports:
       - 127.0.0.1:8000:8000
     environment:
-      HUGGINGFACE_TOKEN: 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
+      HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN}
   
   frontend:
     image: bussler/vector_chatbot_frontend
