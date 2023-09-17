@@ -5,8 +5,15 @@ services:
       - 127.0.0.1:8000:8000
     environment:
       HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN}
+    volumes:
+      - huggingface_storage:/root/.cache/huggingface/hub/
   
   frontend:
     image: bussler/vector_chatbot_frontend
     ports: 
       - 127.0.0.1:8080:8080
+    depends_on:
+      - backend
+
+volumes:
+  huggingface_storage:
