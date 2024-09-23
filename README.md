@@ -1,6 +1,6 @@
 # llm_vectorstorarge_chatbot
 
-[**Project**](https://bussler.github.io/vectorstorage-chatbot/)
+[**Project**](https://bussler.github.io/#/rag-chatbot)
 
 Chat with your own documents with models from huggingface, langchain and chromadb!  
 The vector storage chromadb queries the relevant data at runtime and gives the appropriate context to the llm, which interprets the data.  
